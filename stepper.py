@@ -27,7 +27,7 @@ class Motor(object):
 
         print("...Motor ready")
 
-    def pulse_x_ccw(self):
+    def run_stepper(self, delay):
         print("Running motor...")
         for i in range(5000): 
             # GPIO.output(XEnable, 0)
@@ -35,11 +35,11 @@ class Motor(object):
             GPIO.output(self.dir_pin, 0)
             
             GPIO.output(self.pul_pin, 1)
-            time.sleep(self.delay)
+            time.sleep(delay)
             GPIO.output(self.pul_pin, 0)
-            time.sleep(self.delay)
+            time.sleep(delay)
 
-            # print ("Moving X CCW \n")
+        print("Run complete")
 
 
 # pulse_x_ccw()
