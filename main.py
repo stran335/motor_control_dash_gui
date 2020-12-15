@@ -12,21 +12,31 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div([
     html.H6("Run Stepper!"),
     html.Div(["Step Delay Time (s): ",
-              dcc.Input(id='step-delay', value='0', type='number', placeholder='ex 0.001'),
-              html.Button("start/stop", id='btn-start-stop', n_clicks=0)]),
+        dcc.Input(id='step-delay', 
+            value='0', 
+            type='number', 
+            step='0.001',
+            placeholder='ex 0.001'),
+        html.Button("start/stop", id='btn-start-stop', n_clicks=0)]),
     html.Br(),
     html.Div(id='my-output'),
 
 ])
 
+motor = stepper.Motor()
 
 @app.callback(
     Output(component_id='my-output', component_property='children'),
     [Input(component_id='btn-start-stop', component_property='n_clicks')],
     State(component_id='step-delay', component_property='value')
 )
-def update_output_div(n_clicks, step_delay):
+def motor_start_stop(n_clicks, step_delay):
     msg = ""
+
+    # print("motor.running: " + str(motor.running))
+    if motor.running == True:
+        motor.stop_command = True
+        return "Motor Stopped"
 
     if step_delay == 0:
         return
@@ -34,7 +44,7 @@ def update_output_div(n_clicks, step_delay):
     if (float(step_delay)) < 0.0001:
         return "Cannot have delay below 0.0001"
 
-    motor = stepper.Motor()
+    
     motor.run_stepper(float(step_delay))
 
     if msg == "": msg = "run complete"

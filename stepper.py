@@ -25,12 +25,24 @@ class Motor(object):
 
         GPIO.output(self.ena_pin, GPIO.LOW)
 
+        self.running = False
+        self.stop_command = False
+        self.run_count = 0
+
         print("...Motor ready")
 
     def run_stepper(self, delay):
-        print("Running motor...")
+        print("Start running motor...")
+        self.run_count += 1
         for i in range(5000): 
-            # GPIO.output(XEnable, 0)
+            if self.stop_command == True:
+                self.stop_command = False
+                print("motor stopped")
+                break
+            
+            self.running = True
+
+            # GPIO.output(XEnable, 0)            
 
             GPIO.output(self.dir_pin, 0)
             
@@ -39,7 +51,7 @@ class Motor(object):
             GPIO.output(self.pul_pin, 0)
             time.sleep(delay)
 
+            print("in run count: " + str(self.run_count))
+
+        self.running = False
         print("Run complete")
-
-
-# pulse_x_ccw()
