@@ -17,8 +17,6 @@ class Motor(object):
         self.pul_pin = 26
         self.ena_pin = 16
 
-        self.delay = 0.0005
-
         GPIO.setup(self.dir_pin, GPIO.OUT)
         GPIO.setup(self.pul_pin, GPIO.OUT)
         GPIO.setup(self.ena_pin, GPIO.OUT)
@@ -31,8 +29,17 @@ class Motor(object):
 
         print("...Motor ready")
 
-    def run_stepper(self, delay):
+    def run_stepper(self, delay, clock_wise):
+        # validate parameters
+        if (delay < 0.1):
+            print("Delay cannot be below 0.1 milli-seconds")
+            return
+        
+        # delay from ms to s
+        delay = delay / 1000        
+        
         print("Start running motor...")
+
         self.run_count += 1
         for i in range(5000): 
             if self.stop_command == True:
@@ -44,14 +51,17 @@ class Motor(object):
 
             # GPIO.output(XEnable, 0)            
 
-            GPIO.output(self.dir_pin, 0)
+            if clock_wise == True:
+                GPIO.output(self.dir_pin, 1)
+            else:
+                GPIO.output(self.dir_pin, 0)
             
             GPIO.output(self.pul_pin, 1)
             time.sleep(delay)
             GPIO.output(self.pul_pin, 0)
             time.sleep(delay)
 
-            print("in run count: " + str(self.run_count))
+            # print("in run count: " + str(self.run_count))
 
         self.running = False
         print("Run complete")
