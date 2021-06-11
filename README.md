@@ -1,4 +1,4 @@
-Motor control with GUI
+Stepper Motor control with Dash Plotly Web App as GUI
 
 Setup:
 -Raspberry Pi 4
